@@ -2,14 +2,11 @@
 title: API Reference
 
 language_tabs:
-  - shell
   - ruby
-  - python
-  - javascript
+  - shell
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='https://upcall.com'>Upcall</a>
 
 includes:
   - errors
@@ -19,171 +16,325 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the Upcall API! You can use the API to view and manage campaigns, numbers, and calls.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+The Upcall API follows [JSON-API](http://jsonapi.org/) conventions.
 
 # Authentication
 
-> To authorize, use this code:
+> To authorize, pass in the `auth_token` parameter:
 
 ```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+RestClient.get "http://upcall.com/api/v1/campaigns", {
+  :params => { :auth_token => "AUTH_TOKEN" }
 }
 ```
 
-This endpoint retrieves a specific kitten.
+```shell
+curl "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"
+```
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+> Make sure to replace `AUTH_TOKEN` with your auth token.
+
+Upcall uses auth tokens in the URL to allow access to the API.
+
+All requests to the API should include the `auth_token` query parameter.
+
+# Campaigns
+
+## Get All Campaigns
+
+```ruby
+RestClient.get "http://upcall.com/api/v1/campaigns", {
+  :params => { :auth_token => "AUTH_TOKEN" }
+}
+```
+
+```shell
+curl "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+
+{
+  "data": [
+    {
+      "id": "876",
+      "type": "campaigns",
+      "attributes": {
+        "name": "My Campaign",
+        "pitch": "Be friendly",
+        "language": "en",
+        "status": "pending",
+        "updated_at": "2016-07-18T10:49:18.000Z",
+        "created_at": "2016-07-18T10:49:18.000Z",
+        "start_datetime": "2016-07-11T00:04:58.000Z",
+        "end_datetime": "2016-07-12T00:04:58.000Z",
+        "instructions": "Call people and ask about product satisfaction"
+      }
+    },
+    {
+      "id": "877",
+      "type": "campaigns",
+      "attributes": {
+        "name": "My Campaign",
+        "pitch": "Be friendly",
+        "language": "en",
+        "status": "pending",
+        "updated_at": "2016-07-18T10:49:18.000Z",
+        "created_at": "2016-07-18T10:49:18.000Z",
+        "start_datetime": "2016-07-11T00:04:58.000Z",
+        "end_datetime": "2016-07-12T00:04:58.000Z",
+        "instructions": "Call people and ask about product satisfaction"
+      }
+    }
+  ],
+  "links": {
+    "self": "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=11&page%5Bsize%5D=2"
+  }
+}
+
+```
+
+This endpoint retrieves all campaigns.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET http://upcall.com/api/v1/campaigns`
 
-### URL Parameters
+### Query Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+Parameter |  Description
+--------- |  -----------
+name | Filter for campaigns based on their name.
+language | Filter for campaigns based on their language.
+status | Filter for campaigns based on their status. Must be one of `pending`, `ready`, `paused`, `completed`, or `archived`.
+min_start_datetime | Minimum start date time, eg. `2016-07-18T10:49:18.000Z`
+max_start_datetime | Maximum start date time, eg. `2016-07-18T10:49:18.000Z`
+min_created_datetime | Minimum created date time, eg. `2016-07-18T10:49:18.000Z`
+max_created_datetime | Maximum created date time, eg. `2016-07-18T10:49:18.000Z`
+min_updated_datetime | Minimum updated date time, eg. `2016-07-18T10:49:18.000Z`
+max_updated_datetime | Maximum updated date time, eg. `2016-07-18T10:49:18.000Z`
 
+## Get a Specific Campaign
+
+```ruby
+RestClient.get "http://upcall.com/api/v1/campaigns/123", {
+  :params => { :auth_token => "AUTH_TOKEN" }
+}
+```
+
+```shell
+curl "http://upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+
+{
+  "data": {
+    "id": "123",
+    "type": "campaigns",
+    "attributes": {
+      "name": "My Campaign",
+      "pitch": "Be friendly",
+      "language": "en",
+      "status": "pending",
+      "updated_at": "2016-07-18T10:59:30.000Z",
+      "created_at": "2016-07-18T10:59:30.000Z",
+      "start_datetime": "2016-07-11T00:04:58.000Z",
+      "end_datetime": "2016-07-12T00:04:58.000Z",
+      "instructions": "Call people and ask about product satisfaction"
+    }
+  }
+}
+```
+
+This endpoint retrieves a specific campaign.
+
+## Create a  Campaign
+
+```ruby
+
+campaign = {
+  "data" => {
+    "type" => "campaigns",
+    "attributes" => {
+      "name" => "My Campaign",
+      "instructions" => "Call people and ask about product satisfaction",
+      "pitch" => "Be friendly",
+      "start_datetime" => "2016-07-11T00:04:58Z",
+      "end_datetime" => "2016-07-12T00:04:58Z",
+      "language" => "en",
+      "status" => "pending",
+      "from_number" => "+16501231234",
+    }
+  }
+}
+
+RestClient.post "http://upcall.com/api/v1/campaigns", campaign.to_json {
+  :params => { :auth_token => "AUTH_TOKEN" }
+}
+```
+
+```shell
+curl -X POST "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN" \
+-H 'Content-Type: text/json; \
+-d @- << EOF
+{
+  "data": {
+    "type": "campaigns",
+    "attributes": {
+      "name": "My Campaign",
+      "instructions": "Call people and ask about product satisfaction",
+      "pitch": "Be friendly",
+      "start_datetime": "2016-07-11T00:04:58Z",
+      "end_datetime": "2016-07-12T00:04:58Z",
+      "language": "en",
+      "status": "pending",
+      "from_number": "+16501231234"
+    }
+  }
+}
+EOF
+
+```
+
+> The above command returns JSON structured like this:
+
+```json
+
+{
+  "data": {
+    "id": "123",
+    "type": "campaigns",
+    "attributes": {
+      "name": "My Campaign",
+      "pitch": "Be friendly",
+      "language": "en",
+      "status": "pending",
+      "updated_at": "2016-07-18T10:59:30.000Z",
+      "created_at": "2016-07-18T10:59:30.000Z",
+      "start_datetime": "2016-07-11T00:04:58.000Z",
+      "end_datetime": "2016-07-12T00:04:58.000Z",
+      "instructions": "Call people and ask about product satisfaction"
+    }
+  }
+}
+```
+
+This endpoint creates a new campaign.
+
+
+### HTTP Request
+
+`POST http://upcall.com/api/v1/campaigns`
+
+The expected data format is a JSON payload in the body.
+
+Attribute |  Description
+--------- |  -----------
+name | Name of the campaign.
+instructions | Instructions for the caller.
+pitch | Pitch for the campaign.
+start_datetime | Start time for the campaign, eg. `2016-07-18T10:59:30.000Z`
+end_datetime | End time for the campaign, eg. `2016-07-18T10:59:30.000Z`
+language | Language of the campaign.
+status | Status of the campaign. Must be one of `pending`, `ready`, `paused`, `completed`, or `archived`.
+from_number | Number used for the campaign.
+
+
+## Update a  Campaign
+
+```ruby
+
+campaign = {
+  "data" => {
+    "type" => "campaigns",
+    "attributes" => {
+      "name" => "My Campaign",
+      "instructions" => "Call people and ask about product satisfaction",
+      "pitch" => "Be friendly",
+      "start_datetime" => "2016-07-11T00:04:58Z",
+      "end_datetime" => "2016-07-12T00:04:58Z",
+      "language" => "en",
+      "status" => "pending",
+      "from_number" => "+16501231234",
+    }
+  }
+}
+
+RestClient.path "http://upcall.com/api/v1/campaigns", campaign.to_json {
+  :params => { :auth_token => "AUTH_TOKEN" }
+}
+```
+
+```shell
+curl -X PATCH "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN" \
+-H 'Content-Type: text/json; \
+-d @- << EOF
+{
+  "data": {
+    "type": "campaigns",
+    "attributes": {
+      "name": "My Campaign",
+      "instructions": "Call people and ask about product satisfaction",
+      "pitch": "Be friendly",
+      "start_datetime": "2016-07-11T00:04:58Z",
+      "end_datetime": "2016-07-12T00:04:58Z",
+      "language": "en",
+      "status": "pending",
+      "from_number": "+16501231234"
+    }
+  }
+}
+EOF
+
+```
+
+> The above command returns JSON structured like this:
+
+```json
+
+{
+  "data": {
+    "id": "123",
+    "type": "campaigns",
+    "attributes": {
+      "name": "My Campaign",
+      "pitch": "Be friendly",
+      "language": "en",
+      "status": "pending",
+      "updated_at": "2016-07-18T10:59:30.000Z",
+      "created_at": "2016-07-18T10:59:30.000Z",
+      "start_datetime": "2016-07-11T00:04:58.000Z",
+      "end_datetime": "2016-07-12T00:04:58.000Z",
+      "instructions": "Call people and ask about product satisfaction"
+    }
+  }
+}
+```
+
+This endpoint updates an existing campaign.
+
+### HTTP Request
+
+`PATCH http://upcall.com/api/v1/campaigns`
+
+The expected data format is a JSON payload in the body.
+
+Attribute |  Description
+--------- |  -----------
+name | Name of the campaign.
+instructions | Instructions for the caller.
+pitch | Pitch for the campaign.
+start_datetime | Start time for the campaign, eg. `2016-07-18T10:59:30.000Z`
+end_datetime | End time for the campaign, eg. `2016-07-18T10:59:30.000Z`
+language | Language of the campaign.
+status | Status of the campaign. Must be one of `pending`, `ready`, `paused`, `completed`, or `archived`.
+from_number | Number used for the campaign.

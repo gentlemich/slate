@@ -46,12 +46,15 @@ All requests to the API should include the `auth_token` query parameter.
 
 ```ruby
 RestClient.get "http://upcall.com/api/v1/campaigns", {
-  :params => { :auth_token => "AUTH_TOKEN" }
+  :params => {
+    :auth_token => "AUTH_TOKEN",
+    :language => "en",
+  }
 }
 ```
 
 ```shell
-curl "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"
+curl "http://upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&language=en"
 ```
 
 > The above command returns JSON structured like this:
@@ -129,7 +132,7 @@ RestClient.get "http://upcall.com/api/v1/campaigns/123", {
 ```
 
 ```shell
-curl "http://upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN"
+curl "http://upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"
 ```
 
 > The above command returns JSON structured like this:

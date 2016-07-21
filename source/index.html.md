@@ -42,6 +42,8 @@ All requests to the API should include the `auth_token` query parameter.
 
 # Campaigns
 
+You can use the campaigns endpoints to create new campaigns, as well as manage and view your existing campaigns.
+
 ## Get All Campaigns
 
 ```ruby
@@ -116,6 +118,7 @@ Parameter |  Description
 name | Filter for campaigns based on their name.
 language | Filter for campaigns based on their language.
 status | Filter for campaigns based on their status. Must be one of `pending`, `ready`, `paused`, `completed`, or `archived`.
+from_number | Filter for campaigns based the caller ID number they will be dialed from.
 min_start_datetime | Minimum start date time, eg. `2016-07-18T10:49:18.000Z`
 max_start_datetime | Maximum start date time, eg. `2016-07-18T10:49:18.000Z`
 min_created_datetime | Minimum created date time, eg. `2016-07-18T10:49:18.000Z`
@@ -240,6 +243,10 @@ This endpoint creates a new campaign.
 
 The expected data format is a JSON payload in the body.
 
+<aside class="info">
+A note about <code>from_number</code>: when creating a campaign, you must use a number that has been confirmed. These area available in your Upcall dashboard.
+</aside>
+
 Attribute |  Description
 --------- |  -----------
 name | Name of the campaign.
@@ -341,3 +348,5 @@ end_datetime | End time for the campaign, eg. `2016-07-18T10:59:30.000Z`
 language | Language of the campaign.
 status | Status of the campaign. Must be one of `pending`, `ready`, `paused`, `completed`, or `archived`.
 from_number | Number used for the campaign.
+
+# Numbers

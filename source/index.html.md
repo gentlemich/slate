@@ -336,6 +336,105 @@ Adds a number to the campaign. Note that this endpoint only works on numbers you
 }
 ```
 
+## Get Calls for a Campaign
+
+```ruby
+RestClient.get "http://www.upcall.com/api/v1/campaigns/1/numbers/calls", {
+  :params => {
+    :auth_token => "AUTH_TOKEN",
+  }
+}
+```
+
+```shell
+curl "http://www.upcall.com/api/v1/campaigns/1/numbers/calls?auth_token=AUTH_TOKEN"
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "data": [
+    {
+      "id": "506",
+      "type": "call",
+      "attributes": {
+        "note": "abc",
+        "status": "completed",
+        "duration": 30,
+        "cost": "0.0",
+        "campaign_number_id": 2470,
+        "from": "+16507991234",
+        "to": "+16508881100",
+        "transcript": null,
+        "datetime_called": "2016-07-21T10:45:36.000Z",
+        "cost_currency": "EUR",
+        "recording_urls": [
+          "http://www.site.com/recording/1",
+          "http://www.site.com/recording/2",
+          "http://www.site.com/recording/3"
+        ],
+        "caller": {
+          "id": 100,
+          "name": "Billy Caller",
+          "profile_url": "http://www.upcall.com/callers/100"
+        }
+      }
+    },
+    {
+      "id": "507",
+      "type": "call",
+      "attributes": {
+        "note": "abc",
+        "status": "busy",
+        "duration": 30,
+        "cost": "0.0",
+        "campaign_number_id": 2471,
+        "from": "+16507991234",
+        "to": "+16508881101",
+        "transcript": null,
+        "datetime_called": "2016-07-21T10:45:36.000Z",
+        "cost_currency": "EUR",
+        "recording_urls": [
+          "http://www.site.com/recording/1",
+          "http://www.site.com/recording/2",
+          "http://www.site.com/recording/3"
+        ],
+        "caller": {
+          "id": 100,
+          "name": "Billy Caller",
+          "profile_url": "http://www.upcall.com/callers/100"
+        }
+      }
+    }
+  ],
+  "links": {
+    "self": "http://www.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "http://www.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "http://www.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=10&page%5Bsize%5D=2"
+  }
+}
+```
+
+The campaign calls endpoint retrieves all calls for a campaign.
+
+### HTTP Request
+
+`GET http://www.upcall.com/api/v1/campaigns/:id/numbers/calls`
+
+### Query Parameters
+
+Parameter |  Description
+--------- |  -----------
+status | Filter for status. Must be one of `completed`, `completed_fu_call`, `completed_fu_email`, `completed_fu_inperson`, `call_back_later`, `busy`, `no_answer`, `voicemail`, `hungup`, `not_interested`, `dnc`, `no_service`, `technical_issue`, `wrong_number`, `untried`.
+to_number_id | Filter for calls to a specific number, by it's ID.
+to_number | Filter for calls to a specific number, eg `+16501232134`.
+min_duration | Filter for minimum duration.
+max_duration | Filter for maximum duration.
+min_cost | Filter for minimum cost.
+max_cost | Filter for maximum cost.
+
+
 ## Create a Campaign
 
 ```ruby

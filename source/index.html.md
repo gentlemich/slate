@@ -16,7 +16,7 @@ search: true
 
 # Introduction
 
-Welcome to the Upcall API! You can use the API to view and manage campaigns, numbers, and calls.
+Welcome to the Upcall API preview! You can use the API to view and manage campaigns, numbers, and calls.
 
 The Upcall API follows [JSON-API](http://jsonapi.org/) conventions.
 

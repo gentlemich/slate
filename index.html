@@ -119,48 +119,48 @@
       <div class="content">
         <h1 id="introduction">Introduction</h1>
 
-<p>Welcome to the Upcall API preview! You can use the API to view and manage campaigns, numbers, and calls.</p>
+<p>Welcome to the Upcall API beta! You can use the API to view and manage campaigns, numbers, calls and credits.</p>
 
 <p>The Upcall API follows <a href="http://jsonapi.org/">JSON-API</a> conventions.</p>
 
 <h2 id="getting-started">Getting started</h2>
 
 <ol>
-<li>Create an Upcall account and get your <a href="https://www.upcall.com/en/account/api">API token</a></li>
-<li>Add credit to your <a href="https://www.upcall.com/en/account">account</a> and check out our <a href="https://www.upcall.com/en/pricing">pricing</a></li>
-<li>Verify your outbound phone number (callerID)</li>
+<li>Create an Upcall account and get your <a href="https://www.upcall.com/en/dashboard/api">API token</a></li>
+<li>Add credit to your <a href="https://www.upcall.com/en/companies/payment">account</a> and check out our <a href="https://www.upcall.com/en/pricing">pricing</a></li>
+<li>Verify your outbound phone number (callerID), the <code class="prettyprint">from_number</code> in a campaign.</li>
 <li>Implement the API</li>
 <li>You are done!</li>
 </ol>
 
-<h2 id="example">Example</h2>
+<h2 id="howto">Howto</h2>
 
-<h3 id="how-to-call-numbers">How to call numbers</h3>
+<h3 id="call-numbers-with-a-script">Call numbers with a script</h3>
 
 <ol>
 <li><a href="#create-a-campaign">Create a campaign</a></li>
 <li><a href="#add-a-number-to-a-campaign">Add numbers</a></li>
+<li>The numbers will be called within 24 hours (Mon-Fri).</li>
+<li><a href="#get-numbers-for-a-campaign">Verify the status of the calls and get results</a></li>
 </ol>
 
 <h1 id="authentication">Authentication</h1>
 
 <blockquote>
-<p>To authorize, pass in the <code class="prettyprint">auth_token</code> parameter:</p>
+<p>To authorize, pass in the <code class="prettyprint">token</code> in the header:</p>
 </blockquote>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/campaigns
 </code></pre>
 
 <blockquote>
-<p>Make sure to replace <code class="prettyprint">AUTH_TOKEN</code> with your auth token.</p>
+<p>Make sure to replace <code class="prettyprint">YOUR_TOKEN</code> with your auth token.</p>
 </blockquote>
 
-<p>Upcall uses auth tokens in the URL to allow access to the API.</p>
+<p>Upcall uses auth tokens in the header to allow access to the API.</p>
 
-<p>All requests to the API should include the <code class="prettyprint">auth_token</code> query parameter.</p>
+<p>All requests to the API should include the <code class="prettyprint">token</code> parameter.</p>
 
 <h1 id="campaigns">Campaigns</h1>
 
@@ -172,9 +172,9 @@
     <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span><span class="p">,</span>
     <span class="ss">:language</span> <span class="o">=&gt;</span> <span class="s2">"en"</span><span class="p">,</span>
   <span class="p">}</span>
-<span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&amp;language=en"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/campaigns/123
 </code></pre>
 
 <blockquote>
@@ -207,7 +207,7 @@
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"campaigns"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Campaign"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alert_users"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"always_open"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
@@ -215,9 +215,13 @@
       </span><span class="p">{</span><span class="w">
         </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">84</span><span class="p">,</span><span class="w">
         </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What is your favorite color?"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"response_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"freeform"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"response_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"multiple_radio"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"explanations"</span><span class="p">:</span><span class="w"> </span><span class="s2">"We'd like to know their favorite color in order to match the choices next time they're coming."</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"has_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="w">
+        </span><span class="nt">"has_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Blue"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Green"</span><span class="w">
+        </span><span class="p">]</span><span class="w">
       </span><span class="p">}</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w">
@@ -231,9 +235,9 @@
   </span><span class="p">}</span><span class="w">
   </span><span class="p">],</span><span class="w">
   </span><span class="nt">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&amp;page%5Bnumber%5D=1&amp;page%5Bsize%5D=2"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&amp;page%5Bnumber%5D=2&amp;page%5Bsize%5D=2"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"last"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&amp;page%5Bnumber%5D=11&amp;page%5Bsize%5D=2"</span><span class="w">
+    </span><span class="nt">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=1&amp;page%5Bsize%5D=2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=2&amp;page%5Bsize%5D=2"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"last"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=11&amp;page%5Bsize%5D=2"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 
@@ -296,11 +300,9 @@
 </tbody></table>
 
 <h2 id="get-a-specific-campaign">Get a Specific Campaign</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/campaigns/1
 </code></pre>
 
 <blockquote>
@@ -313,15 +315,21 @@
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"campaigns"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Campaign"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
       </span><span class="p">{</span><span class="w">
         </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
         </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What is your favorite color?"</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"response_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"freeform"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"response_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"multiple_checkbox"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"explanations"</span><span class="p">:</span><span class="w"> </span><span class="s2">"We'd like to know their favorite color in order to match the choices next time they're coming."</span><span class="p">,</span><span class="w">
-        </span><span class="nt">"has_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="w">
+        </span><span class="nt">"has_comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"red"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"green"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"blue"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"black"</span><span class="w">
+          </span><span class="p">]</span><span class="w">
       </span><span class="p">}</span><span class="w">
       </span><span class="p">],</span><span class="w">
       </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w">
@@ -352,12 +360,12 @@
     <span class="s2">"attributes"</span> <span class="o">=&gt;</span> <span class="p">{</span>
       <span class="s2">"name"</span> <span class="o">=&gt;</span> <span class="s2">"Call gym customers"</span><span class="p">,</span>
       <span class="s2">"instructions"</span> <span class="o">=&gt;</span> <span class="s2">"Call people and ask about them about their gym habits"</span><span class="p">,</span>
-      <span class="s2">"pitch"</span> <span class="o">=&gt;</span> <span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span>
+      <span class="s2">"pitch"</span> <span class="o">=&gt;</span> <span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span>
       <span class="s2">"questions"</span> <span class="o">=&gt;</span> <span class="p">[</span>
       <span class="p">{</span>
         <span class="s2">"question"</span> <span class="o">=&gt;</span> <span class="s2">"What days are you going to the gym?"</span><span class="p">,</span>
         <span class="s2">"response_type"</span> <span class="o">=&gt;</span> <span class="s2">"multiple_checkbox"</span><span class="p">,</span>
-        <span class="s2">"explanations"</span> <span class="o">=&gt;</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="s2">"explanations"</span> <span class="o">=&gt;</span> <span class="s2">"Make sure to count all activities"</span><span class="p">,</span>
         <span class="s2">"comment"</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
         <span class="s2">"fields"</span> <span class="o">=&gt;</span> <span class="p">[</span>
           <span class="s2">"Monday"</span><span class="p">,</span>
@@ -371,35 +379,47 @@
       <span class="s2">"start_date"</span> <span class="o">=&gt;</span> <span class="s2">"2016-07-11"</span><span class="p">,</span>
       <span class="s2">"end_date"</span> <span class="o">=&gt;</span> <span class="s2">"2016-07-12"</span><span class="p">,</span>
       <span class="s2">"language"</span> <span class="o">=&gt;</span> <span class="s2">"en"</span><span class="p">,</span>
-      <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"alert_users"</span><span class="p">,</span>
-      <span class="s2">"status"</span> <span class="o">=&gt;</span> <span class="s2">"pending"</span><span class="p">,</span>
+      <span class="s2">"kind"</span> <span class="o">=&gt;</span> <span class="s2">"alert_users"</span><span class="p">,</span>
       <span class="s2">"always_open"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
       <span class="s2">"from_number"</span> <span class="o">=&gt;</span> <span class="s2">"+16501231234"</span><span class="p">,</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns"</span><span class="p">,</span> <span class="n">campaign</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns"</span><span class="p">,</span> <span class="n">campaign</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
--H <span class="s1">'Content-Type: text/json; \
+<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns </span><span class="se">\</span><span class="s2">
+-H "</span>Authorization: Token <span class="nv">token</span><span class="o">=</span>YOUR_TOKEN<span class="s2">"
+-H 'Content-Type: text/json; </span><span class="se">\</span><span class="s2">
 -d @- &lt;&lt; EOF
 {
-  "data": {
-    "type": "campaigns",
-    "attributes": {
-      "name": "My Campaign",
-      "instructions": "Call people and ask about product satisfaction",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'</span>m calling on behalf of <span class="o">[[</span>company]]. How are you today?<span class="s2">",
-      "</span>start_date<span class="s2">": "</span>2016-07-11<span class="s2">",
-      "</span>end_date<span class="s2">": "</span>2016-07-12<span class="s2">",
-      "</span>language<span class="s2">": "</span>en<span class="s2">",
-      "</span>status<span class="s2">": "</span>pending<span class="s2">",
-      "</span>kind<span class="s2">": "</span>alert_users<span class="s2">",
-      "</span>always_open<span class="s2">": true,
-      "</span>from_number<span class="s2">": "</span>+16501231234<span class="s2">"
+  "</span>data<span class="s2">": {
+    "</span><span class="nb">type</span><span class="s2">": "</span>campaigns<span class="s2">",
+    "</span>attributes<span class="s2">": {
+      "</span>name<span class="s2">" =&gt; "</span>Call gym customers<span class="s2">",
+      "</span>instructions<span class="s2">" =&gt; "</span>Call people and ask about them about their gym habits<span class="s2">",
+      "</span>pitch<span class="s2">" =&gt; "</span>Hi <span class="o">[[</span>prospect_name]], My name is <span class="o">[[</span>caller_name]] and I am calling on behalf of <span class="o">[[</span>company]]. How are you today?<span class="s2">",
+      "</span>questions<span class="s2">" =&gt; [
+      {
+        "</span>question<span class="s2">" =&gt; "</span>What days are you going to the gym?<span class="s2">",
+        "</span>response_type<span class="s2">" =&gt; "</span>multiple_checkbox<span class="s2">",
+        "</span>explanations<span class="s2">" =&gt; "</span>Make sure to count all activities<span class="s2">",
+        "</span>comment<span class="s2">" =&gt; false,
+        "</span>fields<span class="s2">" =&gt; [
+          "</span>Monday<span class="s2">",
+          "</span>Tuesday<span class="s2">",
+          "</span>Wednesday<span class="s2">",
+          "</span>Thursday<span class="s2">",
+          "</span>Friday<span class="s2">"
+        ]
+      }
+      ],
+      "</span>start_date<span class="s2">" =&gt; "</span>2016-07-11<span class="s2">",
+      "</span>end_date<span class="s2">" =&gt; "</span>2016-07-12<span class="s2">",
+      "</span>language<span class="s2">" =&gt; "</span>en<span class="s2">",
+      "</span>kind<span class="s2">" =&gt; "</span>alert_users<span class="s2">",
+      "</span>always_open<span class="s2">" =&gt; true,
+      "</span>from_number<span class="s2">" =&gt; "</span>+16501231234<span class="s2">",
     }
   }
 }
@@ -416,19 +436,31 @@ EOF
     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"campaigns"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Campaign"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
-      </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pending"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alert_users"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"always_open"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-18T10:59:30.000Z"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-18T10:59:30.000Z"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Call gym customers"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Call people and ask about them about their gym habits"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"pitch"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"questions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"question"</span><span class="p">:</span><span class="w"> </span><span class="s2">"What days are you going to the gym?"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"response_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"multiple_checkbox"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"explanations"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Make sure to count all activities"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"comment"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="s2">"Monday"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"Tuesday"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"Wednesday"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"Thursday"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"Friday"</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
       </span><span class="nt">"start_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-11"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"end_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-07-12"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"instructions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Call people and ask about product satisfaction"</span><span class="w">
-    </span><span class="p">}</span><span class="w">
+      </span><span class="nt">"language"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"kind"</span><span class="p">:</span><span class="w"> </span><span class="s2">"alert_users"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"always_open"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16501231234"</span><span class="p">,</span><span class="w">
+    </span><span class="err">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
@@ -458,14 +490,9 @@ EOF
 <td>Name of the campaign.</td>
 </tr>
 <tr>
-<td>instructions</td>
+<td>from_number</td>
 <td>Yes</td>
-<td>Instructions for the caller.</td>
-</tr>
-<tr>
-<td>pitch</td>
-<td>Yes</td>
-<td>Introductory pitch read by the Upcaller while on the phone.</td>
+<td>Number used for the campaign.</td>
 </tr>
 <tr>
 <td>language</td>
@@ -483,9 +510,44 @@ EOF
 <td>Keep the campaign open even when all numbers have been called. Must be one of <code class="prettyprint">true</code> or <code class="prettyprint">false</code></td>
 </tr>
 <tr>
-<td>from_number</td>
+<td>instructions</td>
 <td>Yes</td>
-<td>Number used for the campaign.</td>
+<td>Instructions for the Upcaller.</td>
+</tr>
+<tr>
+<td>pitch</td>
+<td>Yes</td>
+<td>Introductory pitch read by the Upcaller while on the phone.</td>
+</tr>
+<tr>
+<td>questions</td>
+<td>No</td>
+<td>Structured questions/data to read during the call.</td>
+</tr>
+<tr>
+<td>question.question</td>
+<td>No</td>
+<td>Question to ask</td>
+</tr>
+<tr>
+<td>question.response_type</td>
+<td>No</td>
+<td>Type of expected answer. Must be one of <code class="prettyprint">multiple_radio</code> (radio buttons), <code class="prettyprint">multiple_checkbox</code> (checkboxes), <code class="prettyprint">freeform</code> (text box), <code class="prettyprint">calendar</code> (calendar), <code class="prettyprint">stars</code> (5-star rater)</td>
+</tr>
+<tr>
+<td>question.fields</td>
+<td>No</td>
+<td>Fields for the multiple choice questions (radio and checkboxes).</td>
+</tr>
+<tr>
+<td>question.explanations</td>
+<td>No</td>
+<td>Extra explanations for the Upcaller</td>
+</tr>
+<tr>
+<td>question.comment</td>
+<td>No</td>
+<td>Add a comment box under each question for the Upcaller to comment. Must be one of <code class="prettyprint">true</code>, <code class="prettyprint">false</code>.</td>
 </tr>
 <tr>
 <td>start_date</td>
@@ -507,24 +569,22 @@ EOF
     <span class="s2">"attributes"</span> <span class="o">=&gt;</span> <span class="p">{</span>
       <span class="s2">"name"</span> <span class="o">=&gt;</span> <span class="s2">"My Campaign"</span><span class="p">,</span>
       <span class="s2">"instructions"</span> <span class="o">=&gt;</span> <span class="s2">"Call people and ask about product satisfaction"</span><span class="p">,</span>
-      <span class="s2">"pitch"</span> <span class="o">=&gt;</span> <span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span>
+      <span class="s2">"pitch"</span> <span class="o">=&gt;</span> <span class="s2">"Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?"</span><span class="p">,</span>
       <span class="s2">"start_date"</span> <span class="o">=&gt;</span> <span class="s2">"2016-07-11"</span><span class="p">,</span>
       <span class="s2">"end_date"</span> <span class="o">=&gt;</span> <span class="s2">"2016-07-12"</span><span class="p">,</span>
       <span class="s2">"language"</span> <span class="o">=&gt;</span> <span class="s2">"en"</span><span class="p">,</span>
-      <span class="s2">"status"</span> <span class="o">=&gt;</span> <span class="s2">"pending"</span><span class="p">,</span>
-      <span class="s2">"always_open"</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+      <span class="s2">"always_open"</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">,</span>
       <span class="s2">"kind"</span><span class="p">:</span> <span class="s2">"alert_users"</span><span class="p">,</span>
       <span class="s2">"from_number"</span> <span class="o">=&gt;</span> <span class="s2">"+16501231234"</span><span class="p">,</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1"</span><span class="p">,</span> <span class="n">campaign</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1"</span><span class="p">,</span> <span class="n">campaign</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X PATCH <span class="s2">"https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X PATCH https://api.upcall.com/api/v1/campaigns/1?auth_token<span class="o">=</span>AUTH_TOKEN <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json; \
+-H "Authorization: Token token=YOUR_TOKEN"
 -d @- &lt;&lt; EOF
 {
   "data": {
@@ -532,14 +592,13 @@ EOF
     "attributes": {
       "name": "My Campaign",
       "instructions": "Call people and ask about product satisfaction",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'</span>m calling on behalf of <span class="o">[[</span>company]]. How are you today?<span class="s2">",
-      "</span>start_date<span class="s2">": "</span>2016-07-11<span class="s2">",
-      "</span>end_date<span class="s2">": "</span>2016-07-12<span class="s2">",
-      "</span>language<span class="s2">": "</span>en<span class="s2">",
-      "</span>status<span class="s2">": "</span>pending<span class="s2">",
-      "</span>always_open<span class="s2">": true,
-      "</span>kind<span class="s2">": "</span>alert_users<span class="s2">",
-      "</span>from_number<span class="s2">": "</span>+16501231234<span class="s2">"
+      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
+      "start_date": "2016-07-11",
+      "end_date": "2016-07-12",
+      "language": "en",
+      "always_open": true,
+      "kind": "alert_users",
+      "from_number": "+16501231234"
     }
   }
 }
@@ -572,14 +631,9 @@ EOF
 <td>Name of the campaign.</td>
 </tr>
 <tr>
-<td>instructions</td>
+<td>from_number</td>
 <td>Yes</td>
-<td>Instructions for the caller.</td>
-</tr>
-<tr>
-<td>pitch</td>
-<td>Yes</td>
-<td>Pitch for the campaign.</td>
+<td>Number used for the campaign.</td>
 </tr>
 <tr>
 <td>language</td>
@@ -589,12 +643,52 @@ EOF
 <tr>
 <td>kind</td>
 <td>Yes</td>
-<td>Type of campaign. Must be one of <code class="prettyprint">lead_gen</code>, <code class="prettyprint">feedback</code>, <code class="prettyprint">verify_info</code>, <code class="prettyprint">inform_product</code>, <code class="prettyprint">alert_users</code>, <code class="prettyprint">inquire_biz</code>, <code class="prettyprint">appt_setting</code>, <code class="prettyprint">mystery_shopping</code>, <code class="prettyprint">confirm_attendance</code>, <code class="prettyprint">other</code>, <code class="prettyprint">customer_support</code>, <code class="prettyprint">market_research</code>.always_open</td>
+<td>Type of campaign. Must be one of <code class="prettyprint">lead_gen</code>, <code class="prettyprint">feedback</code>, <code class="prettyprint">verify_info</code>, <code class="prettyprint">inform_product</code>, <code class="prettyprint">alert_users</code>, <code class="prettyprint">inquire_biz</code>, <code class="prettyprint">appt_setting</code>, <code class="prettyprint">mystery_shopping</code>, <code class="prettyprint">confirm_attendance</code>, <code class="prettyprint">other</code>, <code class="prettyprint">customer_support</code>, <code class="prettyprint">market_research</code></td>
 </tr>
 <tr>
-<td>from_number</td>
+<td>always_open</td>
 <td>Yes</td>
-<td>Number used for the campaign.</td>
+<td>Keep the campaign open even when all numbers have been called. Must be one of <code class="prettyprint">true</code> or <code class="prettyprint">false</code></td>
+</tr>
+<tr>
+<td>instructions</td>
+<td>Yes</td>
+<td>Instructions for the Upcaller.</td>
+</tr>
+<tr>
+<td>pitch</td>
+<td>Yes</td>
+<td>Introductory pitch read by the Upcaller while on the phone.</td>
+</tr>
+<tr>
+<td>questions</td>
+<td>No</td>
+<td>Structured questions/data to read during the call.</td>
+</tr>
+<tr>
+<td>question.question</td>
+<td>No</td>
+<td>Question to ask</td>
+</tr>
+<tr>
+<td>question.response_type</td>
+<td>No</td>
+<td>Type of expected answer. Must be one of <code class="prettyprint">multiple_radio</code> (radio buttons), <code class="prettyprint">multiple_checkbox</code> (checkboxes), <code class="prettyprint">freeform</code> (text box), <code class="prettyprint">calendar</code> (calendar), <code class="prettyprint">stars</code> (5-star rater)</td>
+</tr>
+<tr>
+<td>question.fields</td>
+<td>No</td>
+<td>Fields for the multiple choice questions (radio and checkboxes).</td>
+</tr>
+<tr>
+<td>question.explanations</td>
+<td>No</td>
+<td>Extra explanations for the Upcaller</td>
+</tr>
+<tr>
+<td>question.comment</td>
+<td>No</td>
+<td>Add a comment box under each question for the Upcaller to comment. Must be one of <code class="prettyprint">true</code>, <code class="prettyprint">false</code>.</td>
 </tr>
 <tr>
 <td>start_date</td>
@@ -610,13 +704,11 @@ EOF
 
 <h2 id="delete-a-campaign">Delete a Campaign</h2>
 <pre class="highlight ruby"><code>
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/:id"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/54"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X DELETE <span class="s2">"https://api.upcall.com/api/v1/campaigns/:id?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s2">"https://api.upcall.com/api/v1/campaigns/54"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -d @- <span class="sh">&lt;&lt; EOF
-
 EOF
 
 </span></code></pre>
@@ -636,12 +728,11 @@ EOF
 <h2 id="get-numbers-for-a-campaign">Get Numbers for a Campaign</h2>
 <pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers"</span><span class="p">,</span> <span class="p">{</span>
   <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span><span class="p">,</span>
     <span class="ss">:company</span> <span class="o">=&gt;</span> <span class="s2">"Safeway"</span><span class="p">,</span>
   <span class="p">}</span>
-<span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&amp;company=Safeway"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/campaigns/1/numbers?company<span class="o">=</span>Safeway
 </code></pre>
 
 <blockquote>
@@ -814,13 +905,9 @@ EOF
 </tbody></table>
 
 <h2 id="get-a-specific-number-for-a-campaign">Get a Specific Number for a Campaign</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2?auth_token=AUTH_TOKEN&amp;company=Safeway"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/campaigns/1/numbers/2?company<span class="o">=</span>Safeway
 </code></pre>
 
 <blockquote>
@@ -922,16 +1009,19 @@ EOF
         <span class="s2">"region"</span><span class="p">:</span> <span class="s2">"California"</span><span class="p">,</span>
         <span class="s2">"postal_code"</span><span class="p">:</span> <span class="s2">"94536"</span><span class="p">,</span>
         <span class="s2">"country"</span><span class="p">:</span> <span class="s2">"United States"</span>
-      <span class="p">}</span>
+      <span class="p">},</span>
+      <span class="s2">"extra_fields"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span><span class="mi">39</span><span class="p">,</span> <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"color"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"grey"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span> <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"make"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"toyota"</span><span class="p">}</span>
+      <span class="p">]</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json; \
 -d @- &lt;&lt; EOF
 {
@@ -953,7 +1043,11 @@ EOF
         "region": "California",
         "postal_code": "94536",
         "country": "United States"
-      }
+      },
+      "extra_fields": [
+        {"id":39, "key": "color", "value": "grey"},
+        {"id":40, "key": "make", "value": "toyota"}
+      ]
     }
   }
 }
@@ -991,7 +1085,11 @@ EOF
         </span><span class="nt">"region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"California"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"postal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"94536"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"United States"</span><span class="w">
-      </span><span class="p">}</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nt">"extra_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="mi">39</span><span class="p">,</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"color"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"make"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"toyota"</span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
@@ -1023,11 +1121,10 @@ EOF
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X PATCH <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X PATCH <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json; \
 -d @- &lt;&lt; EOF
 {
@@ -1067,20 +1164,20 @@ EOF
 <pre class="highlight json"><code><span class="w">
 </span><span class="p">{</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"142"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"campaign_numbers"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sally"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Contact"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Joey"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Manager"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"company"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Safeway"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"info"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some random info about the contact, visible to the Upcallers."</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sally@safeway.com"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16501231234"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"joey@safeway.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16507991144"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"extension"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
       </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="nt">"recipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sally Contact"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"recipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Joey Smith"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 Main Street"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Building 500"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fremont"</span><span class="p">,</span><span class="w">
@@ -1095,11 +1192,10 @@ EOF
 
 <h2 id="delete-a-number-from-a-campaign">Delete a Number from a Campaign</h2>
 <pre class="highlight ruby"><code>
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/:id/numbers/:number_id"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns/:1/numbers/:number_id?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/campaigns/1/numbers/2"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json;
 </span></code></pre>
 
@@ -1120,12 +1216,11 @@ EOF
 <h2 id="get-all-contacts">Get All Contacts</h2>
 <pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/contacts"</span><span class="p">,</span> <span class="p">{</span>
   <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span><span class="p">,</span>
     <span class="ss">:title</span> <span class="o">=&gt;</span> <span class="s2">"Director"</span><span class="p">,</span>
   <span class="p">}</span>
-<span class="p">}</span>
+<span class="p">},</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN&amp;title=Director"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/contacts/1?title<span class="o">=</span>Director
 </code></pre>
 
 <blockquote>
@@ -1270,11 +1365,9 @@ EOF
 </tbody></table>
 
 <h2 id="get-a-specific-contact">Get a Specific Contact</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/contacts/1
 </code></pre>
 
 <blockquote>
@@ -1347,11 +1440,10 @@ EOF
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/contacts"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/contacts"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/contacts?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/contacts"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span>
 -H <span class="s1">'Content-Type: text/json; \
 -d @- &lt;&lt; EOF
 {
@@ -1526,11 +1618,10 @@ EOF
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">patch</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="n">number</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span>
 -H <span class="s1">'Content-Type: text/json; \
 -d @- &lt;&lt; EOF
 {
@@ -1672,11 +1763,10 @@ EOF
 
 <h2 id="delete-a-contact">Delete a Contact</h2>
 <pre class="highlight ruby"><code>
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">delete</span> <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl -X DELETE <span class="s2">"https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+<pre class="highlight shell"><code>curl -X DELETE <span class="s2">"https://api.upcall.com/api/v1/contacts/1"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json; \
 EOF
 
@@ -1695,13 +1785,9 @@ EOF
 <h1 id="calls">Calls</h1>
 
 <h2 id="get-all-calls">Get All Calls</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/calls"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span><span class="p">,</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/calls"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/calls
 </code></pre>
 
 <blockquote>
@@ -1815,11 +1901,9 @@ EOF
 </tbody></table>
 
 <h2 id="get-a-specific-call">Get a Specific Call</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/calls/1"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/calls/1"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/calls/1?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/calls/1
 </code></pre>
 
 <blockquote>
@@ -1870,11 +1954,9 @@ EOF
 </aside>
 
 <h2 id="get-current-balance">Get Current Balance</h2>
-<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/credits"</span><span class="p">,</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<pre class="highlight ruby"><code><span class="no">RestClient</span><span class="p">.</span><span class="nf">get</span> <span class="s2">"https://api.upcall.com/api/v1/credits"</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"https://api.upcall.com/api/v1/credits?auth_token=AUTH_TOKEN"</span>
+<pre class="highlight shell"><code>curl -H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> https://api.upcall.com/api/v1/credits
 </code></pre>
 
 <blockquote>
@@ -1910,11 +1992,10 @@ EOF
   <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/credits"</span><span class="p">,</span> <span class="n">credit</span><span class="p">.</span><span class="nf">to_json</span> <span class="p">{</span>
-  <span class="ss">:params</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">:auth_token</span> <span class="o">=&gt;</span> <span class="s2">"AUTH_TOKEN"</span> <span class="p">}</span>
-<span class="p">}</span>
+<span class="no">RestClient</span><span class="p">.</span><span class="nf">post</span> <span class="s2">"https://api.upcall.com/api/v1/credits"</span><span class="p">,</span> <span class="n">credit</span><span class="p">.</span><span class="nf">to_json</span><span class="p">,</span> <span class="p">{</span><span class="ss">:Authorization</span> <span class="o">=&gt;</span> <span class="s1">'Token token=YOUR_TOKEN'</span><span class="p">}</span>
 </code></pre>
 <pre class="highlight shell"><code>curl -X POST <span class="s2">"https://api.upcall.com/api/v1/credits?auth_token=AUTH_TOKEN"</span> <span class="se">\</span>
+-H <span class="s2">"Authorization: Token token=YOUR_TOKEN"</span> <span class="se">\</span>
 -H <span class="s1">'Content-Type: text/json; \
 -d @- &lt;&lt; EOF
 {

@@ -16,41 +16,41 @@ search: true
 
 # Introduction
 
-Welcome to the Upcall API preview! You can use the API to view and manage campaigns, numbers, and calls.
+Welcome to the Upcall API beta! You can use the API to view and manage campaigns, numbers, calls and credits.
 
 The Upcall API follows [JSON-API](http://jsonapi.org/) conventions.
 
 ## Getting started
-1. Create an Upcall account and get your [API token](https://www.upcall.com/en/account/api)
-2. Add credit to your [account](https://www.upcall.com/en/account) and check out our [pricing](https://www.upcall.com/en/pricing)
-3. Verify your outbound phone number (callerID)
+1. Create an Upcall account and get your [API token](https://www.upcall.com/en/dashboard/api)
+2. Add credit to your [account](https://www.upcall.com/en/companies/payment) and check out our [pricing](https://www.upcall.com/en/pricing)
+3. Verify your outbound phone number (callerID), the `from_number` in a campaign.
 4. Implement the API
 5. You are done!
 
-## Example
-### How to call numbers
+## Howto
+### Call numbers with a script
 1. [Create a campaign](#create-a-campaign)
 2. [Add numbers](#add-a-number-to-a-campaign)
+3. The numbers will be called within 24 hours (Mon-Fri).
+4. [Verify the status of the calls and get results](#get-numbers-for-a-campaign)
 
 # Authentication
 
-> To authorize, pass in the `auth_token` parameter:
+> To authorize, pass in the `token` in the header:
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/campaigns", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.get "https://api.upcall.com/api/v1/campaigns", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/campaigns
 ```
 
-> Make sure to replace `AUTH_TOKEN` with your auth token.
+> Make sure to replace `YOUR_TOKEN` with your auth token.
 
-Upcall uses auth tokens in the URL to allow access to the API.
+Upcall uses auth tokens in the header to allow access to the API.
 
-All requests to the API should include the `auth_token` query parameter.
+All requests to the API should include the `token` parameter.
 
 # Campaigns
 
@@ -64,11 +64,11 @@ RestClient.get "https://api.upcall.com/api/v1/campaigns", {
     :auth_token => "AUTH_TOKEN",
     :language => "en",
   }
-}
+}, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&language=en"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/campaigns/123
 ```
 
 > The above command returns JSON structured like this:
@@ -101,7 +101,7 @@ curl "https://api.upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&language
     "type": "campaigns",
     "attributes": {
       "name": "My Campaign",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
+      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
       "language": "en",
       "kind": "alert_users",
       "always_open": true,
@@ -109,9 +109,13 @@ curl "https://api.upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&language
       {
         "id": 84,
         "question": "What is your favorite color?",
-        "response_type": "freeform",
+        "response_type": "multiple_radio",
         "explanations": "We'd like to know their favorite color in order to match the choices next time they're coming.",
-        "has_comment": "true"
+        "has_comment": "true",
+        "fields": [
+        	"Blue",
+        	"Green"
+        ]
       }
       ],
       "status": "pending",
@@ -125,9 +129,9 @@ curl "https://api.upcall.com/api/v1/campaigns/123?auth_token=AUTH_TOKEN&language
   }
   ],
   "links": {
-    "self": "https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
-    "next": "https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
-    "last": "https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN&page%5Bnumber%5D=11&page%5Bsize%5D=2"
+    "self": "https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "https://api.upcall.com/api/v1/campaigns?page%5Bnumber%5D=11&page%5Bsize%5D=2"
   }
 }
 
@@ -157,13 +161,11 @@ max_updated_datetime | Maximum updated date time, eg. `2016-07-18T10:49:18.000Z`
 ## Get a Specific Campaign
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/campaigns/1", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.get "https://api.upcall.com/api/v1/campaigns/1", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/campaigns/1
 ```
 
 > The above command returns JSON structured like this:
@@ -176,15 +178,21 @@ curl "https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN"
     "type": "campaigns",
     "attributes": {
       "name": "My Campaign",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
+      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
       "language": "en",
       "questions": [
       {
         "id": 24,
         "question": "What is your favorite color?",
-        "response_type": "freeform",
+        "response_type": "multiple_checkbox",
         "explanations": "We'd like to know their favorite color in order to match the choices next time they're coming.",
-        "has_comment": "true"
+        "has_comment": "true",
+        "fields": [
+            "red",
+            "green",
+            "blue",
+            "black"
+          ]
       }
       ],
       "status": "pending",
@@ -217,12 +225,12 @@ campaign = {
     "attributes" => {
       "name" => "Call gym customers",
       "instructions" => "Call people and ask about them about their gym habits",
-      "pitch" => "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
+      "pitch" => "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
       "questions" => [
       {
         "question" => "What days are you going to the gym?",
         "response_type" => "multiple_checkbox",
-        "explanations" => "",
+        "explanations" => "Make sure to count all activities",
         "comment" => false,
         "fields" => [
           "Monday",
@@ -236,37 +244,49 @@ campaign = {
       "start_date" => "2016-07-11",
       "end_date" => "2016-07-12",
       "language" => "en",
-      "kind": "alert_users",
-      "status" => "pending",
+      "kind" => "alert_users",
       "always_open": true,
       "from_number" => "+16501231234",
     }
   }
 }
 
-RestClient.post "https://api.upcall.com/api/v1/campaigns", campaign.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.post "https://api.upcall.com/api/v1/campaigns", campaign.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/campaigns?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/campaigns \
+-H "Authorization: Token token=YOUR_TOKEN"
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {
   "data": {
     "type": "campaigns",
     "attributes": {
-      "name": "My Campaign",
-      "instructions": "Call people and ask about product satisfaction",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
-      "start_date": "2016-07-11",
-      "end_date": "2016-07-12",
-      "language": "en",
-      "status": "pending",
-      "kind": "alert_users",
-      "always_open": true,
-      "from_number": "+16501231234"
+      "name" => "Call gym customers",
+      "instructions" => "Call people and ask about them about their gym habits",
+      "pitch" => "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
+      "questions" => [
+      {
+        "question" => "What days are you going to the gym?",
+        "response_type" => "multiple_checkbox",
+        "explanations" => "Make sure to count all activities",
+        "comment" => false,
+        "fields" => [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ]
+      }
+      ],
+      "start_date" => "2016-07-11",
+      "end_date" => "2016-07-12",
+      "language" => "en",
+      "kind" => "alert_users",
+      "always_open" => true,
+      "from_number" => "+16501231234",
     }
   }
 }
@@ -283,18 +303,30 @@ EOF
     "id": "123",
     "type": "campaigns",
     "attributes": {
-      "name": "My Campaign",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
-      "questions": [],
-      "language": "en",
-      "status": "pending",
-      "kind": "alert_users",
-      "always_open": true,
-      "updated_at": "2016-07-18T10:59:30.000Z",
-      "created_at": "2016-07-18T10:59:30.000Z",
+      "name": "Call gym customers",
+      "instructions": "Call people and ask about them about their gym habits",
+      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
+      "questions": [
+      {
+        "question": "What days are you going to the gym?",
+        "response_type": "multiple_checkbox",
+        "explanations": "Make sure to count all activities",
+        "comment": false,
+        "fields": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ]
+      }
+      ],
       "start_date": "2016-07-11",
       "end_date": "2016-07-12",
-      "instructions": "Call people and ask about product satisfaction"
+      "language": "en",
+      "kind": "alert_users",
+      "always_open": true,
+      "from_number": "+16501231234",
     }
   }
 }
@@ -316,12 +348,18 @@ The expected data format is a JSON payload in the body.
 Attribute | Required | Description
 --------- | -------- | -----------
 name | Yes | Name of the campaign.
-instructions | Yes | Instructions for the caller.
-pitch | Yes | Introductory pitch read by the Upcaller while on the phone.
+from_number | Yes | Number used for the campaign.
 language | Yes | Language of the campaign. eg. `en` for English. (English is the only supported language for now)
 kind | Yes | Type of campaign. Must be one of `lead_gen`, `feedback`, `verify_info`, `inform_product`, `alert_users`, `inquire_biz`, `appt_setting`, `mystery_shopping`, `confirm_attendance`, `other`, `customer_support`, `market_research`
 always_open | Yes | Keep the campaign open even when all numbers have been called. Must be one of `true` or `false`
-from_number | Yes | Number used for the campaign.
+instructions | Yes | Instructions for the Upcaller.
+pitch | Yes | Introductory pitch read by the Upcaller while on the phone.
+questions | No | Structured questions/data to read during the call.
+question.question | No | Question to ask
+question.response_type | No | Type of expected answer. Must be one of `multiple_radio` (radio buttons), `multiple_checkbox` (checkboxes), `freeform` (text box), `calendar` (calendar), `stars` (5-star rater)
+question.fields | No | Fields for the multiple choice questions (radio and checkboxes).
+question.explanations | No | Extra explanations for the Upcaller
+question.comment | No | Add a comment box under each question for the Upcaller to comment. Must be one of `true`, `false`.
 start_date | No | Start time for the campaign, eg. `2016-07-18`
 end_date | No | End time for the campaign, eg. `2016-07-18`
 
@@ -335,26 +373,24 @@ campaign = {
     "attributes" => {
       "name" => "My Campaign",
       "instructions" => "Call people and ask about product satisfaction",
-      "pitch" => "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
+      "pitch" => "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
       "start_date" => "2016-07-11",
       "end_date" => "2016-07-12",
       "language" => "en",
-      "status" => "pending",
-      "always_open": true,
+      "always_open" => true,
       "kind": "alert_users",
       "from_number" => "+16501231234",
     }
   }
 }
 
-RestClient.patch "https://api.upcall.com/api/v1/campaigns/1", campaign.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.patch "https://api.upcall.com/api/v1/campaigns/1", campaign.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X PATCH "https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN" \
+curl -X PATCH https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN \
 -H 'Content-Type: text/json; \
+-H "Authorization: Token token=YOUR_TOKEN"
 -d @- << EOF
 {
   "data": {
@@ -362,11 +398,10 @@ curl -X PATCH "https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN" 
     "attributes": {
       "name": "My Campaign",
       "instructions": "Call people and ask about product satisfaction",
-      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I'm calling on behalf of [[company]]. How are you today?",
+      "pitch": "Hi [[prospect_name]], My name is [[caller_name]] and I am calling on behalf of [[company]]. How are you today?",
       "start_date": "2016-07-11",
       "end_date": "2016-07-12",
       "language": "en",
-      "status": "pending",
       "always_open": true,
       "kind": "alert_users",
       "from_number": "+16501231234"
@@ -392,11 +427,18 @@ The expected data format is a JSON payload in the body.
 Attribute | Required | Description
 --------- | -------- | -----------
 name | Yes | Name of the campaign.
-instructions | Yes | Instructions for the caller.
-pitch | Yes | Pitch for the campaign.
-language | Yes | Language of the campaign. eg. `en` for English. (English is the only supported language for now)
-kind | Yes | Type of campaign. Must be one of `lead_gen`, `feedback`, `verify_info`, `inform_product`, `alert_users`, `inquire_biz`, `appt_setting`, `mystery_shopping`, `confirm_attendance`, `other`, `customer_support`, `market_research`.always_open | Yes | Keep the campaign open even when all numbers have been called. Must be one of `true` or `false`
 from_number | Yes | Number used for the campaign.
+language | Yes | Language of the campaign. eg. `en` for English. (English is the only supported language for now)
+kind | Yes | Type of campaign. Must be one of `lead_gen`, `feedback`, `verify_info`, `inform_product`, `alert_users`, `inquire_biz`, `appt_setting`, `mystery_shopping`, `confirm_attendance`, `other`, `customer_support`, `market_research`
+always_open | Yes | Keep the campaign open even when all numbers have been called. Must be one of `true` or `false`
+instructions | Yes | Instructions for the Upcaller.
+pitch | Yes | Introductory pitch read by the Upcaller while on the phone.
+questions | No | Structured questions/data to read during the call.
+question.question | No | Question to ask
+question.response_type | No | Type of expected answer. Must be one of `multiple_radio` (radio buttons), `multiple_checkbox` (checkboxes), `freeform` (text box), `calendar` (calendar), `stars` (5-star rater)
+question.fields | No | Fields for the multiple choice questions (radio and checkboxes).
+question.explanations | No | Extra explanations for the Upcaller
+question.comment | No | Add a comment box under each question for the Upcaller to comment. Must be one of `true`, `false`.
 start_date | No | Start time for the campaign, eg. `2016-07-18`
 end_date | No | End time for the campaign, eg. `2016-07-18`
 
@@ -404,15 +446,13 @@ end_date | No | End time for the campaign, eg. `2016-07-18`
 
 ```ruby
 
-RestClient.delete "https://api.upcall.com/api/v1/campaigns/:id", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.delete "https://api.upcall.com/api/v1/campaigns/54", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X DELETE "https://api.upcall.com/api/v1/campaigns/:id?auth_token=AUTH_TOKEN" \
+curl -X DELETE "https://api.upcall.com/api/v1/campaigns/54" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -d @- << EOF
-
 EOF
 
 ```
@@ -434,14 +474,13 @@ This endpoint deletes an existing campaign.
 ```ruby
 RestClient.get "https://api.upcall.com/api/v1/campaigns/1/numbers", {
   :params => {
-    :auth_token => "AUTH_TOKEN",
     :company => "Safeway",
   }
-}
+}, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&company=Safeway"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/campaigns/1/numbers?company=Safeway
 ```
 
 > The above command returns JSON structured like this:
@@ -569,15 +608,11 @@ country | Filter for a country.
 ## Get a Specific Number for a Campaign
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/campaigns/1/numbers/2", {
-  :params => {
-    :auth_token => "AUTH_TOKEN"
-  }
-}
+RestClient.get "https://api.upcall.com/api/v1/campaigns/1/numbers/2", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/campaigns/1/numbers/2?auth_token=AUTH_TOKEN&company=Safeway"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/campaigns/1/numbers/2?company=Safeway
 ```
 
 > The above command returns JSON structured like this:
@@ -682,18 +717,21 @@ number = {
         "region": "California",
         "postal_code": "94536",
         "country": "United States"
-      }
+      },
+      "extra_fields": [
+        {"id":39, "key": "color", "value": "grey"},
+        {"id":40, "key": "make", "value": "toyota"}
+      ]
     }
   }
 }
 
-RestClient.post "https://api.upcall.com/api/v1/campaigns/1/numbers", number.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.post "https://api.upcall.com/api/v1/campaigns/1/numbers", number.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/campaigns/1/numbers" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {
@@ -715,7 +753,11 @@ curl -X POST "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_
         "region": "California",
         "postal_code": "94536",
         "country": "United States"
-      }
+      },
+      "extra_fields": [
+        {"id":39, "key": "color", "value": "grey"},
+        {"id":40, "key": "make", "value": "toyota"}
+      ]
     }
   }
 }
@@ -754,7 +796,11 @@ Adds a number to a campaign. As long as the campaign is marked as `ready`, the n
         "region": "California",
         "postal_code": "94536",
         "country": "United States"
-      }
+      },
+      "extra_fields": [
+        {"id":39, "key": "color", "value": "grey"},
+        {"id":40, "key": "make", "value": "toyota"}
+      ]
     }
   }
 }
@@ -788,13 +834,12 @@ number = {
   }
 }
 
-RestClient.patch "https://api.upcall.com/api/v1/campaigns/1/numbers/2", number.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.patch "https://api.upcall.com/api/v1/campaigns/1/numbers/2", number.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X PATCH "https://api.upcall.com/api/v1/campaigns/1/numbers/2?auth_token=AUTH_TOKEN" \
+curl -X PATCH "https://api.upcall.com/api/v1/campaigns/1/numbers/2" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {
@@ -835,20 +880,20 @@ Adds a number to the campaign.
 
 {
   "data": {
-    "id": "142",
+    "id": "2",
     "type": "campaign_numbers",
     "attributes": {
       "status": "active",
-      "first_name": "Sally",
-      "last_name": "Contact",
+      "first_name": "Joey",
+      "last_name": "Smith",
       "title": "Manager",
       "company": "Safeway",
       "info": "Some random info about the contact, visible to the Upcallers.",
-      "email": "sally@safeway.com",
-      "phone": "+16501231234",
+      "email": "joey@safeway.com",
+      "phone": "+16507991144",
       "extension": null,
       "address": {
-        "recipient": "Sally Contact",
+        "recipient": "Joey Smith",
         "line1": "100 Main Street",
         "line2": "Building 500",
         "city": "Fremont",
@@ -865,13 +910,12 @@ Adds a number to the campaign.
 
 ```ruby
 
-RestClient.delete "https://api.upcall.com/api/v1/campaigns/:id/numbers/:number_id", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.delete "https://api.upcall.com/api/v1/campaigns/1/numbers/2", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/campaigns/:1/numbers/:number_id?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/campaigns/1/numbers/2" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json;
 ```
 
@@ -893,14 +937,13 @@ You can use the contacts endpoints to list, add and modify contacts in your cont
 ```ruby
 RestClient.get "https://api.upcall.com/api/v1/contacts", {
   :params => {
-    :auth_token => "AUTH_TOKEN",
     :title => "Director",
   }
-}
+}, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN&title=Director"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/contacts/1?title=Director
 ```
 
 > The above command returns JSON structured like this:
@@ -998,13 +1041,11 @@ country | Filter for a country.
 ## Get a Specific Contact
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/contacts/1", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.get "https://api.upcall.com/api/v1/contacts/1", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/contacts/1
 ```
 
 > The above command returns JSON structured like this:
@@ -1079,13 +1120,12 @@ number = {
   }
 }
 
-RestClient.post "https://api.upcall.com/api/v1/contacts", number.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.post "https://api.upcall.com/api/v1/contacts", number.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/contacts?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/contacts" \
+-H "Authorization: Token token=YOUR_TOKEN"
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {
@@ -1197,13 +1237,12 @@ number = {
   }
 }
 
-RestClient.patch "https://api.upcall.com/api/v1/contacts/1", number.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.patch "https://api.upcall.com/api/v1/contacts/1", number.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/contacts/1" \
+-H "Authorization: Token token=YOUR_TOKEN"
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {
@@ -1282,13 +1321,12 @@ address.country | No | Country of the contact.
 
 ```ruby
 
-RestClient.delete "https://api.upcall.com/api/v1/contacts/1", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.delete "https://api.upcall.com/api/v1/contacts/1", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl -X DELETE "https://api.upcall.com/api/v1/contacts/1?auth_token=AUTH_TOKEN" \
+curl -X DELETE "https://api.upcall.com/api/v1/contacts/1" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json; \
 EOF
 
@@ -1308,15 +1346,11 @@ This endpoint updates an existing contact.
 ## Get All Calls
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/calls", {
-  :params => {
-    :auth_token => "AUTH_TOKEN",
-  }
-}
+RestClient.get "https://api.upcall.com/api/v1/calls", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/calls
 ```
 
 > The above command returns JSON structured like this:
@@ -1406,13 +1440,11 @@ max_cost | Filter for maximum cost.
 ## Get a Specific Call
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/calls/1", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.get "https://api.upcall.com/api/v1/calls/1", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/calls/1?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/calls/1
 ```
 
 > The above command returns JSON structured like this:
@@ -1466,13 +1498,11 @@ You can use the credits endpoints to add new credits to your account, as well as
 ## Get Current Balance
 
 ```ruby
-RestClient.get "https://api.upcall.com/api/v1/credits", {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.get "https://api.upcall.com/api/v1/credits", {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
-curl "https://api.upcall.com/api/v1/credits?auth_token=AUTH_TOKEN"
+curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/credits
 ```
 
 > The above command returns JSON structured like this:
@@ -1510,13 +1540,12 @@ credit = {
   }
 }
 
-RestClient.post "https://api.upcall.com/api/v1/credits", credit.to_json {
-  :params => { :auth_token => "AUTH_TOKEN" }
-}
+RestClient.post "https://api.upcall.com/api/v1/credits", credit.to_json, {:Authorization => 'Token token=YOUR_TOKEN'}
 ```
 
 ```shell
 curl -X POST "https://api.upcall.com/api/v1/credits?auth_token=AUTH_TOKEN" \
+-H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json; \
 -d @- << EOF
 {

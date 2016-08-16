@@ -590,7 +590,7 @@ The campaign numbers endpoint retrieves numbers that are part of a campaign. It 
 Parameter |  Description
 --------- |  -----------
 status | Filter for status. Must be one of `untried`, `incompleted`, `dnc`, `failed`, `completed`, `voicemail`.
-phone | Filter for a specific phone number.
+phone | Filter for a specific phone number. The `+` sign before the number should be omitted.
 first_name | Filter for first name.
 last_name | Filter for last name.
 title | Filter for job title.
@@ -717,10 +717,10 @@ number = {
         "postal_code": "94536",
         "country": "United States"
       },
-      "extra_fields": [
-        {"id":39, "key": "color", "value": "grey"},
-        {"id":40, "key": "make", "value": "toyota"}
-      ]
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
     }
   }
 }
@@ -753,10 +753,10 @@ curl -X POST "https://api.upcall.com/api/v1/campaigns/1/numbers" \
         "postal_code": "94536",
         "country": "United States"
       },
-      "extra_fields": [
-        {"id":39, "key": "color", "value": "grey"},
-        {"id":40, "key": "make", "value": "toyota"}
-      ]
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
     }
   }
 }
@@ -796,10 +796,10 @@ Adds a number to a campaign. As long as the campaign is marked as `ready`, the n
         "postal_code": "94536",
         "country": "United States"
       },
-      "extra_fields": [
-        {"id":39, "key": "color", "value": "grey"},
-        {"id":40, "key": "make", "value": "toyota"}
-      ]
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
     }
   }
 }

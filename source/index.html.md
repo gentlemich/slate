@@ -501,6 +501,10 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/ca
       "email": "joey@safeway.com",
       "phone": "+16507991144",
       "extension": null,
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
       "address": {
         "recipient": "Joey Smith",
         "line1": "100 Main Street",
@@ -633,6 +637,10 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/ca
       "email": "joey@safeway.com",
       "phone": "+16507991144",
       "extension": null,
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
       "address": {
         "recipient": "Joey Smith",
         "line1": "100 Main Street",
@@ -768,6 +776,23 @@ Adds a number to a campaign. As long as the campaign is marked as `ready`, the n
 
 `POST https://api.upcall.com/api/v1/campaigns/:id/numbers`
 
+Attribute | Required | Description
+--------- | -------- | -----------
+phone | Yes | Phone number of the contact.
+extension | No | Phone extension of the contact.
+first_name | No | First name of the contact.
+last_name | No | Last name of the contact.
+title | No | Job title of the contact.
+company | No | Company of the contact.
+email | No | Email address of the contact.
+custom_fields | No | Custom field hash. eg. your internal user_id
+address.recipient | No | Address recipient of the contact.
+address.line1 | No | Address line 1 of the contact.
+address.line2 | No | Address line 2 of the contact.
+address.city | No | City of the contact.
+address.region | No | Region of the contact (equivalent to state in the United States).
+address.postal_code | No | Postal code of the contact (equivalent to zip code in the United States).
+address.country | No | Country of the contact.
 
 > The above command returns JSON structured like this:
 
@@ -870,8 +895,25 @@ Adds a number to the campaign.
 
 ### HTTP Request
 
-`POST https://api.upcall.com/api/v1/campaigns/:id/numbers`
+`PATCH https://api.upcall.com/api/v1/campaigns/:id/numbers`
 
+Attribute | Required | Description
+--------- | -------- | -----------
+phone | Yes | Phone number of the contact.
+extension | No | Phone extension of the contact.
+first_name | No | First name of the contact.
+last_name | No | Last name of the contact.
+title | No | Job title of the contact.
+company | No | Company of the contact.
+email | No | Email address of the contact.
+custom_fields | No | Custom field hash. eg. your internal user_id
+address.recipient | No | Address recipient of the contact.
+address.line1 | No | Address line 1 of the contact.
+address.line2 | No | Address line 2 of the contact.
+address.city | No | City of the contact.
+address.region | No | Region of the contact (equivalent to state in the United States).
+address.postal_code | No | Postal code of the contact (equivalent to zip code in the United States).
+address.country | No | Country of the contact.
 
 > The above command returns JSON structured like this:
 
@@ -1205,13 +1247,14 @@ The expected data format is a JSON payload in the body.
 Attribute | Required | Description
 --------- | -------- | -----------
 list_id | Yes | The contact list, parent of this contact
-phone | Yes | Phone number of the contact.
+phone | Yes | Phone number of the contact. eg. `+16501234567`
 extension | No | Phone extension of the contact.
 first_name | No | First name of the contact.
 last_name | No | Last name of the contact.
 title | No | Job title of the contact.
 company | No | Company of the contact.
 email | No | Email address of the contact.
+custom_fields | No | Custom field hash. eg. your internal user_id
 address.recipient | No | Address recipient of the contact.
 address.line1 | No | Address line 1 of the contact.
 address.line2 | No | Address line 2 of the contact.
@@ -1300,14 +1343,15 @@ The expected data format is a JSON payload in the body.
 
 Attribute | Required | Description
 --------- | -------- | -----------
-list_id | Yes | The contact list, parent of this contact
-phone | Yes | Phone number of the contact.
+list_id | Yes | The contact list, parent of this contact. You can find it in your dashboard.
+phone | Yes | Phone number of the contact. eg. `+16501234567`
 extension | No | Phone extension of the contact.
 first_name | No | First name of the contact.
 last_name | No | Last name of the contact.
 title | No | Job title of the contact.
 company | No | Company of the contact.
 email | No | Email address of the contact.
+custom_fields | No | Custom field hash. eg. your internal user_id
 address.recipient | No | Address recipient of the contact.
 address.line1 | No | Address line 1 of the contact.
 address.line2 | No | Address line 2 of the contact.

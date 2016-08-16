@@ -755,7 +755,11 @@ EOF
       </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"joey@safeway.com"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16507991144"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"extension"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"custom_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"client_id"</span><span class="err">,</span><span class="w"> </span><span class="err">12322</span><span class="w">
+      </span><span class="err">}</span><span class="w">
+      </span><span class="s2">"address"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"recipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Joey Smith"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 Main Street"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Building 500"</span><span class="p">,</span><span class="w">
@@ -930,7 +934,11 @@ EOF
       </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"joey@safeway.com"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"+16507991144"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"extension"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"custom_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"client_id"</span><span class="err">,</span><span class="w"> </span><span class="err">12322</span><span class="w">
+      </span><span class="err">}</span><span class="w">
+      </span><span class="s2">"address"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nt">"recipient"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Joey Smith"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line1"</span><span class="p">:</span><span class="w"> </span><span class="s2">"100 Main Street"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"line2"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Building 500"</span><span class="p">,</span><span class="w">
@@ -1060,6 +1068,90 @@ EOF
 
 <p><code class="prettyprint">POST https://api.upcall.com/api/v1/campaigns/:id/numbers</code></p>
 
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>phone</td>
+<td>Yes</td>
+<td>Phone number of the contact.</td>
+</tr>
+<tr>
+<td>extension</td>
+<td>No</td>
+<td>Phone extension of the contact.</td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>No</td>
+<td>First name of the contact.</td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>No</td>
+<td>Last name of the contact.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>No</td>
+<td>Job title of the contact.</td>
+</tr>
+<tr>
+<td>company</td>
+<td>No</td>
+<td>Company of the contact.</td>
+</tr>
+<tr>
+<td>email</td>
+<td>No</td>
+<td>Email address of the contact.</td>
+</tr>
+<tr>
+<td>custom_fields</td>
+<td>No</td>
+<td>Custom field hash. eg. your internal user_id</td>
+</tr>
+<tr>
+<td>address.recipient</td>
+<td>No</td>
+<td>Address recipient of the contact.</td>
+</tr>
+<tr>
+<td>address.line1</td>
+<td>No</td>
+<td>Address line 1 of the contact.</td>
+</tr>
+<tr>
+<td>address.line2</td>
+<td>No</td>
+<td>Address line 2 of the contact.</td>
+</tr>
+<tr>
+<td>address.city</td>
+<td>No</td>
+<td>City of the contact.</td>
+</tr>
+<tr>
+<td>address.region</td>
+<td>No</td>
+<td>Region of the contact (equivalent to state in the United States).</td>
+</tr>
+<tr>
+<td>address.postal_code</td>
+<td>No</td>
+<td>Postal code of the contact (equivalent to zip code in the United States).</td>
+</tr>
+<tr>
+<td>address.country</td>
+<td>No</td>
+<td>Country of the contact.</td>
+</tr>
+</tbody></table>
+
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
 </blockquote>
@@ -1157,7 +1249,91 @@ EOF
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST https://api.upcall.com/api/v1/campaigns/:id/numbers</code></p>
+<p><code class="prettyprint">PATCH https://api.upcall.com/api/v1/campaigns/:id/numbers</code></p>
+
+<table><thead>
+<tr>
+<th>Attribute</th>
+<th>Required</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>phone</td>
+<td>Yes</td>
+<td>Phone number of the contact.</td>
+</tr>
+<tr>
+<td>extension</td>
+<td>No</td>
+<td>Phone extension of the contact.</td>
+</tr>
+<tr>
+<td>first_name</td>
+<td>No</td>
+<td>First name of the contact.</td>
+</tr>
+<tr>
+<td>last_name</td>
+<td>No</td>
+<td>Last name of the contact.</td>
+</tr>
+<tr>
+<td>title</td>
+<td>No</td>
+<td>Job title of the contact.</td>
+</tr>
+<tr>
+<td>company</td>
+<td>No</td>
+<td>Company of the contact.</td>
+</tr>
+<tr>
+<td>email</td>
+<td>No</td>
+<td>Email address of the contact.</td>
+</tr>
+<tr>
+<td>custom_fields</td>
+<td>No</td>
+<td>Custom field hash. eg. your internal user_id</td>
+</tr>
+<tr>
+<td>address.recipient</td>
+<td>No</td>
+<td>Address recipient of the contact.</td>
+</tr>
+<tr>
+<td>address.line1</td>
+<td>No</td>
+<td>Address line 1 of the contact.</td>
+</tr>
+<tr>
+<td>address.line2</td>
+<td>No</td>
+<td>Address line 2 of the contact.</td>
+</tr>
+<tr>
+<td>address.city</td>
+<td>No</td>
+<td>City of the contact.</td>
+</tr>
+<tr>
+<td>address.region</td>
+<td>No</td>
+<td>Region of the contact (equivalent to state in the United States).</td>
+</tr>
+<tr>
+<td>address.postal_code</td>
+<td>No</td>
+<td>Postal code of the contact (equivalent to zip code in the United States).</td>
+</tr>
+<tr>
+<td>address.country</td>
+<td>No</td>
+<td>Country of the contact.</td>
+</tr>
+</tbody></table>
 
 <blockquote>
 <p>The above command returns JSON structured like this:</p>
@@ -1536,7 +1712,7 @@ EOF
 <tr>
 <td>phone</td>
 <td>Yes</td>
-<td>Phone number of the contact.</td>
+<td>Phone number of the contact. eg. <code class="prettyprint">+16501234567</code></td>
 </tr>
 <tr>
 <td>extension</td>
@@ -1567,6 +1743,11 @@ EOF
 <td>email</td>
 <td>No</td>
 <td>Email address of the contact.</td>
+</tr>
+<tr>
+<td>custom_fields</td>
+<td>No</td>
+<td>Custom field hash. eg. your internal user_id</td>
 </tr>
 <tr>
 <td>address.recipient</td>
@@ -1688,12 +1869,12 @@ EOF
 <tr>
 <td>list_id</td>
 <td>Yes</td>
-<td>The contact list, parent of this contact</td>
+<td>The contact list, parent of this contact. You can find it in your dashboard.</td>
 </tr>
 <tr>
 <td>phone</td>
 <td>Yes</td>
-<td>Phone number of the contact.</td>
+<td>Phone number of the contact. eg. <code class="prettyprint">+16501234567</code></td>
 </tr>
 <tr>
 <td>extension</td>
@@ -1724,6 +1905,11 @@ EOF
 <td>email</td>
 <td>No</td>
 <td>Email address of the contact.</td>
+</tr>
+<tr>
+<td>custom_fields</td>
+<td>No</td>
+<td>Custom field hash. eg. your internal user_id</td>
 </tr>
 <tr>
 <td>address.recipient</td>

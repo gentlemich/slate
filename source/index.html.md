@@ -61,7 +61,6 @@ You can use the campaigns endpoints to create new campaigns, as well as manage a
 ```ruby
 RestClient.get "https://api.upcall.com/api/v1/campaigns", {
   :params => {
-    :auth_token => "AUTH_TOKEN",
     :language => "en",
   }
 }, {:Authorization => 'Token token=YOUR_TOKEN'}
@@ -388,7 +387,7 @@ RestClient.patch "https://api.upcall.com/api/v1/campaigns/1", campaign.to_json, 
 ```
 
 ```shell
-curl -X PATCH https://api.upcall.com/api/v1/campaigns/1?auth_token=AUTH_TOKEN \
+curl -X PATCH https://api.upcall.com/api/v1/campaigns/1 \
 -H 'Content-Type: text/json; \
 -H "Authorization: Token token=YOUR_TOKEN"
 -d @- << EOF
@@ -573,9 +572,9 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/ca
   }
   ],
   "links": {
-    "self": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
-    "next": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
-    "last": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=10&page%5Bsize%5D=2"
+    "self": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=10&page%5Bsize%5D=2"
   }
 }
 ```
@@ -680,9 +679,9 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/ca
   }
   ],
   "links": {
-    "self": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
-    "next": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
-    "last": "https://api.upcall.com/api/v1/campaigns/1/numbers?auth_token=AUTH_TOKEN&page%5Bnumber%5D=10&page%5Bsize%5D=2"
+    "self": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "https://api.upcall.com/api/v1/campaigns/1/numbers?page%5Bnumber%5D=10&page%5Bsize%5D=2"
   }
 }
 ```
@@ -1004,9 +1003,9 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/co
   }
   ],
   "links": {
-    "self": "https://api.upcall.com/api/v1/contacts?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2&title=Director",
-    "next": "https://api.upcall.com/api/v1/contacts?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2&title=Director",
-    "last": "https://api.upcall.com/api/v1/contacts?auth_token=AUTH_TOKEN&page%5Bnumber%5D=3&page%5Bsize%5D=2&title=Director"
+    "self": "https://api.upcall.com/api/v1/contacts?page%5Bnumber%5D=1&page%5Bsize%5D=2&title=Director",
+    "next": "https://api.upcall.com/api/v1/contacts?page%5Bnumber%5D=2&page%5Bsize%5D=2&title=Director",
+    "last": "https://api.upcall.com/api/v1/contacts?page%5Bnumber%5D=3&page%5Bsize%5D=2&title=Director"
   }
 }
 ```
@@ -1412,9 +1411,9 @@ curl -H "Authorization: Token token=YOUR_TOKEN" https://api.upcall.com/api/v1/ca
   }
   ],
   "links": {
-    "self": "https://api.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=1&page%5Bsize%5D=2",
-    "next": "https://api.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=2&page%5Bsize%5D=2",
-    "last": "https://api.upcall.com/api/v1/calls?auth_token=AUTH_TOKEN&page%5Bnumber%5D=10&page%5Bsize%5D=2"
+    "self": "https://api.upcall.com/api/v1/calls?page%5Bnumber%5D=1&page%5Bsize%5D=2",
+    "next": "https://api.upcall.com/api/v1/calls?page%5Bnumber%5D=2&page%5Bsize%5D=2",
+    "last": "https://api.upcall.com/api/v1/calls?page%5Bnumber%5D=10&page%5Bsize%5D=2"
   }
 }
 ```
@@ -1544,7 +1543,7 @@ RestClient.post "https://api.upcall.com/api/v1/credits", credit.to_json, {:Autho
 ```
 
 ```shell
-curl -X POST "https://api.upcall.com/api/v1/credits?auth_token=AUTH_TOKEN" \
+curl -X POST "https://api.upcall.com/api/v1/credits" \
 -H "Authorization: Token token=YOUR_TOKEN" \
 -H 'Content-Type: text/json; \
 -d @- << EOF

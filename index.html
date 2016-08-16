@@ -851,7 +851,7 @@ EOF
 </tr>
 <tr>
 <td>phone</td>
-<td>Filter for a specific phone number.</td>
+<td>Filter for a specific phone number. The <code class="prettyprint">+</code> sign before the number should be omitted.</td>
 </tr>
 <tr>
 <td>first_name</td>
@@ -1009,10 +1009,10 @@ EOF
         <span class="s2">"postal_code"</span><span class="p">:</span> <span class="s2">"94536"</span><span class="p">,</span>
         <span class="s2">"country"</span><span class="p">:</span> <span class="s2">"United States"</span>
       <span class="p">},</span>
-      <span class="s2">"extra_fields"</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span><span class="mi">39</span><span class="p">,</span> <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"color"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"grey"</span><span class="p">},</span>
-        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span> <span class="s2">"key"</span><span class="p">:</span> <span class="s2">"make"</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">:</span> <span class="s2">"toyota"</span><span class="p">}</span>
-      <span class="p">]</span>
+      <span class="s2">"custom_fields"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"grey"</span><span class="p">,</span>
+        <span class="s2">"client_id"</span><span class="p">,</span> <span class="mi">12322</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
@@ -1043,10 +1043,10 @@ EOF
         "postal_code": "94536",
         "country": "United States"
       },
-      "extra_fields": [
-        {"id":39, "key": "color", "value": "grey"},
-        {"id":40, "key": "make", "value": "toyota"}
-      ]
+      "custom_fields": {
+        "color": "grey",
+        "client_id", 12322
+      }
     }
   }
 }
@@ -1085,10 +1085,10 @@ EOF
         </span><span class="nt">"postal_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"94536"</span><span class="p">,</span><span class="w">
         </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"United States"</span><span class="w">
       </span><span class="p">},</span><span class="w">
-      </span><span class="nt">"extra_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="mi">39</span><span class="p">,</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"color"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="mi">40</span><span class="p">,</span><span class="w"> </span><span class="nt">"key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"make"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"toyota"</span><span class="p">}</span><span class="w">
-      </span><span class="p">]</span><span class="w">
+      </span><span class="nt">"custom_fields"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"color"</span><span class="p">:</span><span class="w"> </span><span class="s2">"grey"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"client_id"</span><span class="err">,</span><span class="w"> </span><span class="err">12322</span><span class="w">
+      </span><span class="err">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
